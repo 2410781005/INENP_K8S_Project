@@ -62,6 +62,160 @@ Mittels einer GitHub Action, die als Paramter den Namen der Firma entgegen nimmt
 
 
 
+
+## Installieren und konfigurieren
+
+Benötigte Software und Key's
+
+- OpenTofu ([https://opentofu.org]())
+
+- kubectl CLI
+
+- Exoscale API Key
+
+### Cluster vorbereiten
+
+Das GitHub Repo klonen/runterladen und in dessen root Verzeichnis wechseln.
+
+In der terraform.tfvars Datei die Exoscale API Keys eintragen.
+
+Mittels OpenTofu den Cluster "planen" und "applyen"
+
+```bash
+tofu plan 
+```
+
+```bash
+tofu apply
+```
+
+Nachdem der Cluster erfolgreich erstellt wurde, kann die kubeconfig zur Steuerung des Clusters verwendet werden. Entweder mittels übergabe der kubeconfig Datei bei jedem kubectl Befehl
+
+```bash
+kubectl --kubeconfig /path/to/kubeconfig.yaml get pods
+```
+
+oder man kopiert den Inhalt der kubeconfig in die Datei "config" im Ordner ".kube".
+
+Für die weiteren Schritte wurde die config Datei erstellt um die kubectl Befehle schlanker zu halten.
+
+Damit die GitHub Action auch kubectl Befehle ausführen kann muss im GitHub Repo unter "**Settings**" -> "**Secrets and variables**" -> "**Repository secrets**" das Secret "EXOSCALE_KUBECONFIG" erstellt/ausgetauscht und eine BASE64 Variante der kubeconfig eingefügt werden.
+
+Mit folgendem Befehl kann eine BASE64 Version erstellt werden
+
+```bash
+openssl base64 -in kubeconfig -out kubeconfig_base64
+```
+
+
+
+### OAuth und API-Gateway deployen
+
+Damit der OAuth Proxy und das API-Gateway erstellt werden, müssen zwei Deplyoments angewendet werden.
+
+```bash
+kubectl apply -f oauth-proxy/
+```
+
+und
+
+```bash
+kubectl apply -f api-gateway/
+```
+
+Danach überprüfen ob alles Pods dieser zwei Deployments und der restlichen K8S Infrastruktur laufen:
+
+```bash
+kubectl get pods --all-namespaces
+```
+
+
+
+### GitHub Workflow starten
+
+Damit ein Namespace mit dem Radius Service erstellt wird, muss nur mit einem Klick die GitHub Action im Repo -> "**Actions**" -> "**Deploy new Namespace to Exoscale Kubernetes**" ausgeführt werden. Dafür ist die Eingabe des Unternehmennames nötig (dieser ist dann auch der Name des Namespaces)
+
+Sobald der Workflow erfolgreich durchgelaufen ist, überprüfen ob alle Deployments des Radius Service laufen
+
+```bash
+kubectl get pods -n [gewählter-unternehmenname]
+```
+
+
+
+### Service Testen
+
+> ⚠️ Aktuelle Einschränkung: Der LoadBalancer funktioniert noch nicht, somit ist der OAuth Service von "außen" noch nicht erreichbar. Daher ist der Umweg über port-forward nötig
+
+
+
+Damit Anfragen an den OAuth-Proxy gesendet werden muss der port-forward durchgeführt werden
+
+```bash
+kubectl port-forward deployment/oauth2-proxy 8080:4180 
+```
+
+Da wir eine Authentifizierte Anfrage stellen die der OAuth-Proxy prüft, muss ein gültiger Maschine-to-Maschine Token erstellt werden
+
+```bash
+TOKEN=$(curl -s -X POST \
+  https://dev-agov026zrx5oi6bw.eu.auth0.com/oauth/token \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "client_id":"OLmNQTGjwZaiTcuCWnSFu64l5B2pPCXp",
+    "client_secret":"XXXXX",
+    "audience":"https://dev-agov026zrx5oi6bw.eu.auth0.com/api/v2/",
+    "grant_type":"client_credentials"
+  }' | jq -r .access_token)
+```
+
+Das "client_secret" ist hier versteckt, dieses gibt es auf Nachfrage beim Projektteam.
+
+Danach den Token anzeigen lassen
+
+```bash
+echo $TOKEN
+```
+
+Jetzt ist es mögich eine curl Anfrage an den Service zu senden um die gewünschten Daten zurück zu bekommen
+
+```bash
+curl --location 'http://localhost:8080' \
+--header 'username-header: mresch' \
+--header 'pass-header: 12345678' \
+--header 'companyID: [gewählter-unternehmenname]' \
+--header 'Authorization: Bearer
+```
+
+> ⚠️ bei "companyID" muss der Name des gewählten Wertes der GitHub Action eingetragen werden (Unternehemsnamen)
+> 
+> Der Token muss als "Authorization: Bearer" eingetragen sein
+
+Als Antwort kommt dann mit diesem Beispiel folgende Antwort zurück
+
+```json
+{
+    "status": 200,
+    "data": {
+        "header": "mresch",
+        "user_data": [
+            [
+                1,
+                "mresch",
+                "12345678",
+                100,
+                300,
+                "fw-100",
+                1
+            ]
+        ],
+        "billing_status": "Paid"
+    }
+}
+```
+
+
+
 ## Bereits bekannte Probleme
 
 Hier beschreiben wir Probleme die uns bereits bekannt sind und mögliche Lösungsansätze
