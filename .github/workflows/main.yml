@@ -1,0 +1,86 @@
+name: Deploy new Namespace to Exoscale Kubernetes
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_company:
+        description: 'Namen des neuen Unternehmens'
+        required: true
+        default: 'company-xyz'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Kubernetes Tools
+        uses: azure/setup-kubectl@v3
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+
+      - name: Authenticate to Exoscale Kubernetes
+        id: auth
+        run: |
+          echo "${{ secrets.EXOSCALE_KUBECONFIG }}" | base64 -d > kubeconfig.yaml
+          #export KUBECONFIG=$(pwd)/kubeconfig.yaml
+          echo "KUBECONFIG=$(pwd)/kubeconfig.yaml" >> "$GITHUB_OUTPUT"
+          echo "KUBECONFIG is set to: $KUBECONFIG" # Überprüfe die Variable direkt danach
+          #kubectl config current-context # Optional: Zeige den aktuellen Kontext
+          #kubectl config get-contexts
+
+      - name: Test Kubernetes Connection
+        run: |
+          echo "kubeconfig: "
+          echo $KUBECONFIG
+
+      - name: Test Kubernetes Connection
+        env:
+          KUBECONFIG: ${{ steps.auth.outputs.KUBECONFIG }}
+        run: |
+          echo "Using KUBECONFIG: $KUBECONFIG"
+          kubectl get nodes
+
+      - name: Deploy radius-service and create namespace
+        env:
+          KUBECONFIG: ${{ steps.auth.outputs.KUBECONFIG }}
+          DEPLOYMENT_COMPANY_NAME: ${{ github.event.inputs.deployment_company }}
+        run: |
+          helm upgrade --install radius-service ./radius-service/ \
+            --namespace "$DEPLOYMENT_COMPANY_NAME" \
+            --create-namespace
+
+      - name: Apply mysql yaml
+        env:
+          KUBECONFIG: ${{ steps.auth.outputs.KUBECONFIG }}
+          DEPLOYMENT_COMPANY_NAME: ${{ github.event.inputs.deployment_company }}
+        run: |
+          kubectl apply -f ./mysql/ -n "$DEPLOYMENT_COMPANY_NAME"
+
+      - name: Apply billing-db yaml
+        env:
+          KUBECONFIG: ${{ steps.auth.outputs.KUBECONFIG }}
+          DEPLOYMENT_COMPANY_NAME: ${{ github.event.inputs.deployment_company }}
+        run: |
+          kubectl apply -f ./billing-db/ -n "$DEPLOYMENT_COMPANY_NAME"
+          
+      - name: Check Deployment Status
+        env:
+          KUBECONFIG: ${{ steps.auth.outputs.KUBECONFIG }}
+          DEPLOYMENT_COMPANY_NAME: ${{ github.event.inputs.deployment_company }}
+        run: kubectl get deployment -n "$DEPLOYMENT_COMPANY_NAME"
+
+      - name: Check Service Status
+        env:
+          KUBECONFIG: ${{ steps.auth.outputs.KUBECONFIG }}
+          NAMESPACE: ${{ steps.create-namespace.outputs.NAMESPACE }}
+        run: kubectl get service -n "$NAMESPACE"
+
+      # Optional: Füge hier Schritte hinzu, um den Status der Deployments zu überprüfen
+      # - name: Check Deployment Status
+      #   run: kubectl get deployment -n "${{ github.event.inputs.namespace }}"
+
+      # - name: Check Service Status
+      #   run: kubectl get service -n "${{ github.event.inputs.namespace }}"
