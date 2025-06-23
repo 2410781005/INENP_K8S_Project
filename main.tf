@@ -1,9 +1,5 @@
-locals {
-  zone = "de-fra-1"
-}
-
 resource "exoscale_sks_cluster" "my_sks_cluster" {
-  zone = local.zone
+  zone = var.exoscale_zone
   name = var.exoscale_cluster_name
   exoscale_csi = true
   service_level = var.exoscale_sks_service_level
@@ -11,7 +7,6 @@ resource "exoscale_sks_cluster" "my_sks_cluster" {
 
 resource "exoscale_security_group" "web_sg" {
   name = "web-access"
-  zone = local.zone
 }
 
 resource "exoscale_security_group_rule" "http_ingress" {
@@ -22,7 +17,6 @@ resource "exoscale_security_group_rule" "http_ingress" {
   end_port          = 80
   cidr              = "0.0.0.0/0"
   description       = "Allow HTTP traffic"
-  zone = local.zone
 }
 
 resource "exoscale_sks_nodepool" "my_sks_nodepool" {
