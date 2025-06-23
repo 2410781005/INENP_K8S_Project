@@ -27,10 +27,8 @@ jobs:
 
       - name: Validate OpenTofu config
         run: |
-          cd infrastructure
           tofu plan
 
       - name: Apply OpenTofu configuration
         run: |
-          cd infrastructure
           tofu apply -auto-approve
