@@ -10,5 +10,8 @@ terraform {
 provider "exoscale" {
   key    = var.exoscale_key
   secret = var.exoscale_secret
-  endpoint = "https://api-at-vie-2.exoscale.com/v2"
+}
+
+locals {
+  zone = "at-vie-2"
 }
