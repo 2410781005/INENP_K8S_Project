@@ -21,6 +21,9 @@ jobs:
         with:
           tofu_version: latest
 
+      - name: Show OpenTofu version
+        run: tofu version
+
       - name: Init OpenTofu
         run: |
           tofu init
