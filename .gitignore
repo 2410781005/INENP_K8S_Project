@@ -1,0 +1,67 @@
+# keys
+keys.txt
+
+#secrets
+*.tfvars
+
+# System / OS
+.DS_Store
+__MACOSX/
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+.env
+venv/
+env/
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*.tfplan
+.crash/
+*.log
+
+# Kubernetes / Helm / Secrets
+kubeconfig
+keys.txt
+*.key
+*.pem
+*.crt
+*.secret
+*.bak
+*.backup
+*.tgz
+*.lock
+
+# Build / Output
+dist/
+build/
+*.out
+*.o
+*.so
+
+# Docker
+*.tar
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+debug.log
+
+# Helm cache
+charts/
+*.tgz
+
+# Python requirements cache
+pip-wheel-metadata/
+*.egg-info/
