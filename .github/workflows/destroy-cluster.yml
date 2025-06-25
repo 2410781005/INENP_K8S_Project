@@ -29,4 +29,6 @@ jobs:
 
       - name: Destroy Infrastructure
         run: |
-          tofu destroy -auto-approve
+          tofu destroy -auto-approve \
+            -var="exoscale_key=${{ secrets.EXOSCALE_API_KEY }}" \
+            -var="exoscale_secret=${{ secrets.EXOSCALE_API_SECRET }}"
