@@ -13,7 +13,6 @@ data:
     oidc_extra_audiences = "https://dev-agov026zrx5oi6bw.eu.auth0.com/api/v2/"
     skip_jwt_bearer_tokens = true
     upstreams = "http://api-gateway.default.svc.cluster.local:80/"
-    #upstreams = "static://202"                                                             # <-- für Testzwecke
     redirect_url = "http://oauth2-proxy.default.svc.cluster.local/oauth2/callback"
     set_authorization_header = true
     pass_authorization_header = true
