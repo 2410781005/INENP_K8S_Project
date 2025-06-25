@@ -28,6 +28,5 @@ jobs:
             -backend-config="secret_key=${EXO_SECRET_ACCESS_KEY}"
 
       - name: Destroy Infrastructure
-        working-directory: infra/opentofu
         run: |
           tofu destroy -auto-approve
