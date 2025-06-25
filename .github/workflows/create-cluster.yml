@@ -38,20 +38,25 @@ jobs:
         run: |
           tofu apply -auto-approve
 
-      - name: Encode kubeconfig
-        id: encode
+      - name: Set KUBECONFIG environment variable
         run: |
-          content=$(cat kubeconfig | base64 | tr -d '\n')
-          echo "::set-output name=content::$content"
+          KUBECONFIG_PATH="KUBECONFIG"
+          if [ ! -f "$KUBECONFIG_PATH" ]; then
+            echo "Error: Kubeconfig file not found at $KUBECONFIG_PATH"
+            exit 1
+          fi
+          echo "KUBECONFIG=$KUBECONFIG_PATH" >> $GITHUB_ENV
+          echo "KUBECONFIG successfully downloaded and set."
+          ENCODED_KUBECONFIG=$(echo -n "$KUBECONFIG_PATH" | base64 -w 0)
+          echo "ENCODED_KUBECONFIG=$ENCODED_KUBECONFIG" >> $GITHUB_ENV
 
       - name: Update GitHub Secret
-        run: |
-          curl -X PUT \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/actions/secrets/EXOSCALE_KUBECONFIG \
-            -d '{"encrypted_value": "${{ steps.encode.outputs.content }}","key_id": "$(gh api repos/${{ github.repository }}/actions/secrets/public-key --jq .key_id)"}'
-          }
-          EOF
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          KUBECONFIG_SECRET_NAME: EXOSCLAE_KUBECONFIG
+        run: |
+          # Rufe die GitHub API auf, um das Secret zu aktualisieren
+          # Installiere `gh` CLI, wenn noch nicht verfügbar (standardmäßig auf GitHub-Runnern)
+          gh secret set $KUBECONFIG_SECRET_NAME --body "${{ env.ENCODED_KUBECONFIG }}"
+
+          echo "GitHub Secret '$KUBECONFIG_SECRET_NAME' wurde erfolgreich aktualisiert."
