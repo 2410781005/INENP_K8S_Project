@@ -40,13 +40,11 @@ jobs:
 
       - name: Set KUBECONFIG environment variable
         run: |
-          KUBECONFIG_PATH="KUBECONFIG"
+          KUBECONFIG_PATH="./KUBECONFIG"
           if [ ! -f "$KUBECONFIG_PATH" ]; then
             echo "Error: Kubeconfig file not found at $KUBECONFIG_PATH"
             exit 1
           fi
-          echo "KUBECONFIG=$KUBECONFIG_PATH" >> $GITHUB_ENV
-          echo "KUBECONFIG successfully downloaded and set."
           ENCODED_KUBECONFIG=$(echo -n "$KUBECONFIG_PATH" | base64 -w 0)
           echo "ENCODED_KUBECONFIG=$ENCODED_KUBECONFIG" >> $GITHUB_ENV
 
