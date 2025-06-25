@@ -1,3 +1,15 @@
+terraform {
+  backend "s3" {
+    endpoint                    = "https://sos-at-vie-2.exo.io"
+    bucket                      = "opentofustate"
+    key                         = "tofu/dev/infrastructure.tfstate"
+    region                      = "at-vie-2"
+    skip_credentials_validation = true
+    skip_region_validation      = true
+    use_path_style              = true
+  }
+}
+
 resource "exoscale_sks_cluster" "my_sks_cluster" {
   zone = var.exoscale_zone
   name = var.exoscale_cluster_name
