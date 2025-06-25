@@ -145,9 +145,9 @@ kubectl get pods -n [gewählter-unternehmenname]
 
 ### Service Testen
 
-> ⚠️ Aktuelle Einschränkung: Der LoadBalancer funktioniert noch nicht, somit ist der OAuth Service von "außen" noch nicht erreichbar. Daher ist der Umweg über port-forward nötig
+> ⚠️ ~~Aktuelle Einschränkung: Der LoadBalancer funktioniert noch nicht, somit ist der OAuth Service von "außen" noch nicht erreichbar. Daher ist der Umweg über port-forward nötig~~
 
-
+> ✅ Einschränkung mit PR Feature/oauthproxy #5 gefixed. Somit kann die Anfrage an die Public IP gesendet werden
 
 Damit Anfragen an den OAuth-Proxy gesendet werden muss der port-forward durchgeführt werden
 
@@ -229,7 +229,7 @@ Hier beschreiben wir Probleme die uns bereits bekannt sind und mögliche Lösung
   <tr>
     <td>Worker Node Performance</td>
     <td>Ressourcen Limit bei mehreren Deployments</td>
-    <td>⚠️</td>
+    <td>✅</td>
   </tr>
   <tr>
     <td>Block Storage notwendig</td>
