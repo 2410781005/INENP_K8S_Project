@@ -28,7 +28,9 @@ jobs:
         run: |
           tofu init \
             -backend-config="access_key=${EXOSCALE_API_KEY}" \
-            -backend-config="secret_key=${EXOSCALE_API_SECRET}"
+            -backend-config="secret_key=${EXOSCALE_API_SECRET}" \
+            -var="exoscale_key=${{ secrets.EXOSCALE_API_KEY }}" \
+            -var="exoscale_secret=${{ secrets.EXOSCALE_API_SECRET }}"
 
       - name: Validate OpenTofu config
         run: |
