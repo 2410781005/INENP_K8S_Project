@@ -44,15 +44,15 @@ resource "local_sensitive_file" "kubeconfig" {
     content = exoscale_sks_kubeconfig.my_sks_kubeconfig.kubeconfig
 }
 
-resource "exoscale_nlb" "web_nlb" {
-  name = "web-nlb"
+resource "exoscale_nlb" "oauth_lb" {
+  name = "oauth_lb"
   zone = var.exoscale_zone
 }
 
 resource "exoscale_nlb_service" "http_proxy" {
   name              = "http"
   zone              = var.exoscale_zone
-  nlb_id            = exoscale_nlb.web_nlb.id
+  nlb_id            = exoscale_nlb.oauth_lb.id
   instance_pool_id  = exoscale_sks_nodepool.my_sks_nodepool.instance_pool_id
   protocol          = "tcp"
   port              = 80
