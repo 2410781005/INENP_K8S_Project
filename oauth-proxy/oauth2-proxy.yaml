@@ -59,11 +59,10 @@ kind: Service
 metadata:
   name: oauth2-proxy
 spec:
-  type: LoadBalancer
-  #type: NodePort # <-- Änderung von LoadBalancer auf NodePort (das war nur zum testen, ob es am LoadBalancer liegt)
+  type: NodePort
   ports:
-    - port: 80
+    - port: 4180
       targetPort: 4180
-      #nodePort: 31682
+      nodePort: 31682
   selector:
     app: oauth2-proxy
