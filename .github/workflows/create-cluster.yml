@@ -38,6 +38,11 @@ jobs:
         run: |
           tofu apply -auto-approve
 
+      - name: Print generated kubeconfig
+        run: |
+          echo "Generated kubeconfig content:"
+          cat ./kubeconfig
+
       - name: Set KUBECONFIG environment variable
         run: |
           ENCODED_KUBECONFIG=$(cat kubeconfig | base64 -w 0)
@@ -46,10 +51,18 @@ jobs:
       - name: Update GitHub Secret
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-          KUBECONFIG_SECRET_NAME: EXOSCLAE_KUBECONFIG
+          KUBECONFIG_SECRET_NAME: EXOSCALE_KUBECONFIG
         run: |
           # Rufe die GitHub API auf, um das Secret zu aktualisieren
           # Installiere `gh` CLI, wenn noch nicht verfügbar (standardmäßig auf GitHub-Runnern)
           gh secret set $KUBECONFIG_SECRET_NAME --body "${{ env.ENCODED_KUBECONFIG }}"
 
           echo "GitHub Secret '$KUBECONFIG_SECRET_NAME' wurde erfolgreich aktualisiert."
+
+      - name: Deploy OAUTH and API-GATEWAY Kubernetes
+        run: |
+          mkdir -p $HOME/.kube
+          cp ./kubeconfig $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+          kubectl apply -f oauth-proxy/
+          kubectl apply -f api-gateway/
