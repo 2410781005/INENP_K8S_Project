@@ -10,6 +10,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: latest
+
+      - name: Show OpenTofu version
+        run: tofu version
+
       - name: Init OpenTofu
         env:
           EXO_ACCESS_KEY_ID: ${{ secrets.EXOSCALE_API_KEY }}
