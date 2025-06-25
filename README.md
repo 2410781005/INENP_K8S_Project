@@ -147,7 +147,7 @@ kubectl get pods -n [gewählter-unternehmenname]
 
 > ⚠️ ~~Aktuelle Einschränkung: Der LoadBalancer funktioniert noch nicht, somit ist der OAuth Service von "außen" noch nicht erreichbar. Daher ist der Umweg über port-forward nötig~~
 
-> ✅ Einschränkung mit PR Feature/oauthproxy #5 gefixed. Somit kann die Anfrage an die Public IP gesendet werden
+> ✅ Einschränkung mit PR Feature/oauthproxy #5 gefixed. Somit kann die Anfrage an die Public IP Port 80 gesendet werden
 
 Damit Anfragen an den OAuth-Proxy gesendet werden muss der port-forward durchgeführt werden
 
