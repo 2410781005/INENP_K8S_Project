@@ -1,0 +1,25 @@
+name: Destroy Exoscale SKS with OpenTofu
+
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Init OpenTofu
+        env:
+          EXO_ACCESS_KEY_ID: ${{ secrets.EXOSCALE_API_KEY }}
+          EXO_SECRET_ACCESS_KEY: ${{ secrets.EXOSCALE_API_SECRET }}
+        run: |
+          tofu init \
+            -backend-config="access_key=${EXO_ACCESS_KEY_ID}" \
+            -backend-config="secret_key=${EXO_SECRET_ACCESS_KEY}"
+
+      - name: Destroy Infrastructure
+        working-directory: infra/opentofu
+        run: |
+          tofu destroy -auto-approve
