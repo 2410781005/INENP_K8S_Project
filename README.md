@@ -111,6 +111,10 @@ openssl base64 -in kubeconfig -out kubeconfig_base64
 
 ### OAuth und API-Gateway deployen
 
+> ✅ NEU: Einfach die Action "Deploy Exoscale SKS with OpenTofu" ausführen 🥳
+
+> ⚠️ Deprecated! Wurde jetzt mit einer GitHub Action automatisiert umgesetzt!
+
 Damit der OAuth Proxy und das API-Gateway erstellt werden, müssen zwei Deplyoments angewendet werden.
 
 ```bash
