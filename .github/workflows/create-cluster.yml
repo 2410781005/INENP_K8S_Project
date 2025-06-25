@@ -38,11 +38,6 @@ jobs:
         run: |
           tofu apply -auto-approve
 
-      - name: Print generated kubeconfig
-        run: |
-          echo "Generated kubeconfig content:"
-          cat ./kubeconfig
-
       - name: Set KUBECONFIG environment variable
         run: |
           ENCODED_KUBECONFIG=$(cat kubeconfig | base64 -w 0)
