@@ -36,7 +36,7 @@ Die geplante neue Architektur beinhaltet alle oben erwähnten und geforderten Be
 
 
 
-![INENP_Radius_K8S_Architektur_2.png](src/INENP_Radius_K8S_Architektur_2.png)
+![INENP_Radius_K8S_Architektur.png](src/INENP_Radius_K8S_Architektur.png)
 
 
 
