@@ -31,4 +31,5 @@ jobs:
         run: |
           tofu destroy -auto-approve \
             -var="exoscale_key=${{ secrets.EXOSCALE_API_KEY }}" \
-            -var="exoscale_secret=${{ secrets.EXOSCALE_API_SECRET }}"
+            -var="exoscale_secret=${{ secrets.EXOSCALE_API_SECRET }}" \
+            -var="exoscale_cluster_name=radius-cluster"
