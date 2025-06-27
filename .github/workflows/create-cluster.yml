@@ -34,7 +34,7 @@ jobs:
 
       - name: Validate OpenTofu config
         run: |
-          tofu plan \
+          tofu plan -auto-approve \
             -var="exoscale_key=${{ secrets.EXOSCALE_API_KEY }}" \
             -var="exoscale_secret=${{ secrets.EXOSCALE_API_SECRET }}"
 
