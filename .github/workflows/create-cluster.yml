@@ -32,12 +32,6 @@ jobs:
             -var="exoscale_key=${{ secrets.EXOSCALE_API_KEY }}" \
             -var="exoscale_secret=${{ secrets.EXOSCALE_API_SECRET }}"
 
-      - name: Validate OpenTofu config
-        run: |
-          tofu plan -auto-approve \
-            -var="exoscale_key=${{ secrets.EXOSCALE_API_KEY }}" \
-            -var="exoscale_secret=${{ secrets.EXOSCALE_API_SECRET }}"
-
       - name: Apply OpenTofu configuration
         run: |
           tofu apply -auto-approve \
