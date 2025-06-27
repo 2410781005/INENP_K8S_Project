@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     endpoint                    = "https://sos-at-vie-2.exo.io"
-    bucket                      = "opentofustate"
+    bucket                      = "opentofustatebucket"
     key                         = "tofu/dev/infrastructure.tfstate"
     region                      = "at-vie-2"
     skip_credentials_validation = true
