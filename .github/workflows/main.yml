@@ -78,9 +78,3 @@ jobs:
           NAMESPACE: ${{ steps.create-namespace.outputs.NAMESPACE }}
         run: kubectl get service -n "$NAMESPACE"
 
-      # Optional: Füge hier Schritte hinzu, um den Status der Deployments zu überprüfen
-      # - name: Check Deployment Status
-      #   run: kubectl get deployment -n "${{ github.event.inputs.namespace }}"
-
-      # - name: Check Service Status
-      #   run: kubectl get service -n "${{ github.event.inputs.namespace }}"
