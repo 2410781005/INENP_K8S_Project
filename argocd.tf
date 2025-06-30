@@ -17,7 +17,7 @@ resource "helm_release" "argo_cd" {
 locals {
   repo_url = "https://github.com/2410781005/INENP_K8S_Project-ArgoCD-App"
   repo_path = "deploy"
-  app_name = "gitops-base"
+  app_name = "radius-service-tenant-master"
   app_namespace = "argocd"
 }
 
