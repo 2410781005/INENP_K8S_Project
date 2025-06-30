@@ -3,10 +3,10 @@ applications:
     project: default
     source:
       repoURL: ${repo_url}
-      targetRevision: HEAD
+      targetRevision: main
       path: ${repo_path}
       directory:
-      recurse: true
+        recurse: true
     destination:
       server: https://kubernetes.default.svc
       namespace: ${app_namespace}
