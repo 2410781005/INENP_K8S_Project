@@ -18,6 +18,11 @@ jobs:
       - name: Show OpenTofu version
         run: tofu version
 
+      - name: Decode kubeconfig
+        run: |
+          echo "${{ secrets.EXOSCALE_KUBECONFIG }}" | base64 -d > kubeconfig
+          chmod 600 kubeconfig
+
       - name: Init OpenTofu
         env:
           EXO_ACCESS_KEY_ID: ${{ secrets.EXOSCALE_API_KEY }}
