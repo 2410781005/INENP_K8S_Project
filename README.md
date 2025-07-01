@@ -42,11 +42,11 @@ Die geplante neue Architektur beinhaltet alle oben erwähnten und geforderten Be
 
 Die Bereitstellung der Core Infrastruktur, also Managed Kubernetes, Block Storage, Worker Nodes und Loadbalancer erfolgt mittels IaC openTofu in der Exoscale Cloud.
 
-Alle nötigen Ressourcen inklusive dem OAuth und API-Gateway werden dadurch erstellt. Ebenfalls wird ein Namespace mit dem Namen "testCompany" erstellt und die Radius Anwendung deployt, damit gleich nach der Bereitstellung ein manuell Service Check durchgeführt werden kann.
+Alle nötigen Ressourcen inklusive dem OAuth und API-Gateway werden dadurch erstellt.
 
 ### "one click" Deployment
 
-Mittels einer GitHub Action, die als Paramter den Namen der Firma entgegen nimmt und diesen danach als Referenz für den Namespace nimmt, wird das Deployment in den Kubernetes Cluster durchgeführt. Die notwendigen daten wie der Auth Token wird in der GitHub Aktion ausgegeben und dem Kunden auf einem sicheren weg zur Verfügung gestellt.
+Mittels einer GitHub Action, die als Paramter den Namen der Firma entgegen nimmt und diesen danach als Referenz für den Namespace nimmt, werden ArgoCd config Dateiein erstellt und in den deploy Ordner im Repo abgelegt. In diesem Verzeichnis sucht ArgoCD dann nach Änderungen und erstellt das vollständige Service für den gewählten SaaS Kunden.
 
 ## Installieren und konfigurieren
 
